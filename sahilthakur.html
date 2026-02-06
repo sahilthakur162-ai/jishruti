@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sahil ❤ Shruti</title>
+  <style>
+    :root{
+      --fg:#fff;
+      --muted:rgba(255,255,255,.82);
+      --border:rgba(255,255,255,.22);
+      --shadow: 0 24px 90px rgba(0,0,0,.55);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--fg);
+      overflow:hidden;
+
+      /* BACKGROUND IMAGE */
+      background:
+        linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.55)),
+        url('bg.jpg') center/cover no-repeat fixed;
+    }
+
+    /* Soft vignette */
+    body::after{
+      content:"";
+      position:fixed; inset:0;
+      pointer-events:none;
+      background: radial-gradient(120% 80% at 50% 50%, rgba(0,0,0,0), rgba(0,0,0,.45));
+    }
+
+    /* Floating hearts */
+    .hearts{position:fixed; inset:0; pointer-events:none; z-index:0;}
+    .heart{
+      position:absolute; width:14px; height:14px; transform:rotate(45deg);
+      animation: rise linear infinite; opacity:0;
+      filter: drop-shadow(0 10px 18px rgba(255,80,160,.35));
+    }
+    .heart:before,.heart:after{
+      content:""; position:absolute; width:14px; height:14px; border-radius:50%;
+      background: rgba(255,120,190,.95);
+    }
+    .heart:before{left:-7px}
+    .heart:after{top:-7px}
+    .heart{background: rgba(255,120,190,.95)}
+    @keyframes rise{
+      0%{transform:translateY(20px) rotate(45deg) scale(.9);opacity:0}
+      10%{opacity:.9}
+      100%{transform:translateY(-110vh) rotate(45deg) scale(1.35);opacity:0}
+    }
+
+    .card{
+      position:relative;
+      z-index:1;
+      width:min(780px,92vw);
+      padding:30px 24px;
+      border-radius:26px;
+      border:1px solid var(--border);
+      background:
+        linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.55));
+      backdrop-filter: blur(6px);
+      box-shadow: var(--shadow);
+      text-align:center;
+    }
+    .badge{
+      display:inline-block; padding:10px 16px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.28);
+      background: rgba(255,255,255,.10);
+      font-weight:900; margin-bottom:14px;
+    }
+    h1{margin:0 0 10px; font-size:clamp(26px,4vw,46px);}
+    .from{font-weight:900; margin-bottom:12px;}
+    .sub{color:var(--muted); font-weight:800; margin-bottom:16px;}
+
+    .btns{
+      display:flex; justify-content:center; gap:12px; margin-top:10px;
+      min-height:64px; position:relative;
+    }
+    button{
+      border:1px solid rgba(255,255,255,.28);
+      background: rgba(255,255,255,.10);
+      color:var(--fg);
+      padding:12px 18px; border-radius:14px;
+      font-weight:900; cursor:pointer;
+      transition: transform .12s ease, background .12s ease;
+    }
+    button:hover{transform:translateY(-1px); background:rgba(255,255,255,.16)}
+    .primary{
+      border:0;
+      background: linear-gradient(135deg, rgba(255,90,160,.95), rgba(190,90,255,.9));
+      box-shadow: 0 16px 45px rgba(255,90,160,.35);
+    }
+
+    .hint{margin-top:14px; color:var(--muted); font-weight:800;}
+    .yay{display:none; margin-top:18px;}
+    .yay h2{font-size:clamp(22px,3.4vw,34px);}
+
+    .footer{margin-top:16px; font-size:12px; opacity:.7}
+  </style>
+</head>
+<body>
+  <div class="hearts" id="hearts"></div>
+
+  <div class="card" id="card">
+    <div class="badge">💗 Special for Shruti</div>
+    <h1 id="q">Shruti, will you be my Valentine? 💖</h1>
+    <div class="from">— From Sahil</div>
+    <div class="sub">Ek chhota sa sawaal… par mere dil se ❤️</div>
+
+    <div class="btns" id="btns">
+      <button id="yesBtn" class="primary">Yes</button>
+      <button id="noBtn">No</button>
+    </div>
+
+    <div class="hint" id="hint"></div>
+
+    <div class="yay" id="yay">
+      <h2>I love you ❤️</h2>
+      <p>You make my world brighter every day 💫</p>
+    </div>
+
+    <div class="footer">“No” button thoda shy hai 😅</div>
+  </div>
+
+<script>
+  // hearts
+  const hearts=document.getElementById('hearts');
+  function spawn(){
+    const h=document.createElement('div');
+    h.className='heart';
+    h.style.left=Math.random()*100+'vw';
+    h.style.bottom='-20px';
+    h.style.animationDuration=(5+Math.random()*6)+'s';
+    hearts.appendChild(h);
+    setTimeout(()=>h.remove(),12000);
+  }
+  setInterval(spawn,420);
+
+  // buttons
+  const btns=document.getElementById('btns');
+  const yesBtn=document.getElementById('yesBtn');
+  const noBtn=document.getElementById('noBtn');
+  const hint=document.getElementById('hint');
+  const yay=document.getElementById('yay');
+  const q=document.getElementById('q');
+
+  let dodging=false;
+  function rand(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
+  function dodge(){
+    if(!dodging){ dodging=true; noBtn.style.position='absolute'; }
+    const r=btns.getBoundingClientRect();
+    const b=noBtn.getBoundingClientRect();
+    noBtn.style.left=rand(0,Math.max(0,r.width-b.width))+'px';
+    noBtn.style.top =rand(0,Math.max(0,r.height-b.height))+'px';
+    hint.textContent='No bolna mushkil lag raha hai 😜';
+  }
+  noBtn.addEventListener('mouseenter',dodge);
+  noBtn.addEventListener('click',e=>{e.preventDefault();dodge();});
+
+  yesBtn.addEventListener('click',()=>{
+    btns.style.display='none';
+    yay.style.display='block';
+    q.textContent='You made Sahil very happy 💞';
+    hint.textContent='';
+  });
+</script>
+</body>
+</html>
